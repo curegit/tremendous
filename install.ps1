@@ -1,15 +1,15 @@
 #!/usr/bin/env pwsh
 
 $documentsPath = [Environment]::GetFolderPath([Environment+SpecialFolder]::MyDocuments)
-$modsPath = Join-Path $documentsPath "My Games/Beyond the Sword(J)/PublicMaps"
-if (-Not (Test-Path $modsPath)) {
-  $modsPath = Join-Path $documentsPath "My Games/Beyond the Sword/PublicMaps"
+$customMapPath = Join-Path $documentsPath "My Games/Beyond the Sword(J)/PublicMaps"
+if (-Not (Test-Path $customMapPath)) {
+  $customMapPath = Join-Path $documentsPath "My Games/Beyond the Sword/PublicMaps"
 }
-if (-Not (Test-Path $modsPath)) {
+if (-Not (Test-Path $customMapPath)) {
   throw "The PublicMaps path does not exist."
 }
-Write-Output $modsPath
+Write-Output $customMapPath
 
-$modName = "PublicMaps/*"
-
-Copy-Item $modName $modsPath -Recurse
+$scriptPath = $PSScriptRoot
+$publicMapsPath = Join-Path $scriptPath "PublicMaps"
+Copy-Item "$publicMapsPath/*" $customMapPath -Recurse -Verbose
