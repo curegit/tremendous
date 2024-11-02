@@ -1025,8 +1025,6 @@ def isWaterMatch(x, y):
 
 
 class HeightMap:
-    def __init__(self):
-        return
 
     def generateHeightMap(self):
         self.heightMap = array("d")
@@ -1035,7 +1033,7 @@ class HeightMap:
 
         self.generateMidpointDisplacement()
         self.ensureWaterAndIceAtEdges()
-        return
+
 
     def ensureWaterAndIceAtEdges(self):
         gc = CyGlobalContext()
@@ -1044,18 +1042,24 @@ class HeightMap:
         for y in range(2):
             for x in range(mc.hmWidth):
                 i = GetHmIndex(x, y)
-                self.heightMap[i] = 0.0  # 水域
+                if y == 0:
+                    self.heightMap[i] = 0.0  # 水域
+                elif random() < 0.5:
+                    self.heightMap[i] = 0.0  # 水域
                 # 氷河を配置
-                plot = mmap.plot(x, y)
-                plot.setFeatureType(gc.getInfoTypeForString("FEATURE_ICE"), 0)
+                #plot = mmap.plot(x, y)
+                #plot.setFeatureType(gc.getInfoTypeForString("FEATURE_ICE"), 0)
 
         for y in range(mc.hmHeight - 2, mc.hmHeight):
             for x in range(mc.hmWidth):
                 i = GetHmIndex(x, y)
-                self.heightMap[i] = 0.0  # 水域
+                if y == mc.hmHeight - 1:
+                    self.heightMap[i] = 0.0  # 水域
+                elif random() < 0.5:
+                    self.heightMap[i] = 0.0  # 水域
                 # 氷河を配置
-                plot = mmap.plot(x, y)
-                plot.setFeatureType(gc.getInfoTypeForString("FEATURE_ICE"), 0)
+                #plot = mmap.plot(x, y)
+                #plot.setFeatureType(gc.getInfoTypeForString("FEATURE_ICE"), 0)
 
     def checkMaxGrain(self):
         # hm map dimensions(minus 1 if no wrapping) must be evenly divisible
