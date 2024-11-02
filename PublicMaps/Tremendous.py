@@ -1032,7 +1032,8 @@ class HeightMap:
             self.heightMap.append(0.0)
 
         self.generateMidpointDisplacement()
-        self.ensureWaterAndIceAtEdges()
+        if not mc.WrapY:
+            self.ensureWaterAndIceAtEdges()
 
 
     def ensureWaterAndIceAtEdges(self):
@@ -1044,7 +1045,7 @@ class HeightMap:
                 i = GetHmIndex(x, y)
                 if y == 0:
                     self.heightMap[i] = 0.0  # 水域
-                elif random() < 0.5:
+                elif PRand.random() < 0.5:
                     self.heightMap[i] = 0.0  # 水域
                 # 氷河を配置
                 #plot = mmap.plot(x, y)
@@ -1055,7 +1056,7 @@ class HeightMap:
                 i = GetHmIndex(x, y)
                 if y == mc.hmHeight - 1:
                     self.heightMap[i] = 0.0  # 水域
-                elif random() < 0.5:
+                elif PRand.random() < 0.5:
                     self.heightMap[i] = 0.0  # 水域
                 # 氷河を配置
                 #plot = mmap.plot(x, y)
