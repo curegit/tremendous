@@ -330,8 +330,8 @@ class MapConstants:
         self.hmSeparation = 0
 
         # Creates a water margin around the map edges.
-        self.northMargin = True
-        self.southMargin = True
+        self.northMargin = False
+        self.southMargin = False
         self.eastMargin = False
         self.westMargin = False
 
@@ -575,7 +575,10 @@ class PythonRandom:
             seed()  # Start with system time
             seedValue = randint(0, 9007199254740991)
             seed(seedValue)
-            self.seedString = "Random seed (Using Python rands) for this map is %(s)20d" % {"s": seedValue}
+            self.seedString = (
+                "Random seed (Using Python rands) for this map is %(s)20d"
+                % {"s": seedValue}
+            )
 
         ##            seedValue = 4316490043753041
         ##            seed(seedValue)
@@ -586,7 +589,10 @@ class PythonRandom:
 
             seedValue = self.mapRand.get(65535, "Seeding mapRand - FairWeather.py")
             self.mapRand.init(seedValue)
-            self.seedString = "Random seed (Using getMapRand) for this map is %(s)20d" % {"s": seedValue}
+            self.seedString = (
+                "Random seed (Using getMapRand) for this map is %(s)20d"
+                % {"s": seedValue}
+            )
 
         ##            seedValue = 56870
         ##            self.mapRand.init(seedValue)
@@ -601,7 +607,9 @@ class PythonRandom:
         else:
             # This formula is identical to the getFloat function in CvRandom. It
             # is not exposed to Python so I have to recreate it.
-            fResult = float(self.mapRand.get(65535, "Getting float -FairWeather.py")) / float(65535)
+            fResult = float(
+                self.mapRand.get(65535, "Getting float -FairWeather.py")
+            ) / float(65535)
             #            print fResult
             return fResult
 
@@ -614,7 +622,9 @@ class PythonRandom:
             return randint(rMin, rMax)
         else:
             # mapRand.get() is not inclusive, so we must make it so
-            return rMin + self.mapRand.get(rMax + 1 - rMin, "Getting a randint - FairWeather.py")
+            return rMin + self.mapRand.get(
+                rMax + 1 - rMin, "Getting a randint - FairWeather.py"
+            )
 
 
 # Set up random number system for global access
@@ -728,7 +738,9 @@ def NormalizeMap(fMap, width, height):
     scaler = 1.0 / maxAlt
     for y in range(height):
         for x in range(width):
-            fMap[GetIndexGeneral(x, y, width, height)] = fMap[GetIndexGeneral(x, y, width, height)] * scaler
+            fMap[GetIndexGeneral(x, y, width, height)] = (
+                fMap[GetIndexGeneral(x, y, width, height)] * scaler
+            )
     return
 
 
@@ -856,7 +868,9 @@ def GetInfoType(string):
 
 
 def GetDistance(x, y, dx, dy):
-    distance = math.sqrt(abs((float(x - dx) * float(x - dx)) + (float(y - dy) * float(y - dy))))
+    distance = math.sqrt(
+        abs((float(x - dx) * float(x - dx)) + (float(y - dy) * float(y - dy)))
+    )
     return distance
 
 
@@ -964,7 +978,10 @@ def FindValueFromPercent(mmap, width, height, percent, tolerance, greaterThan):
         ##        print "matchCount = %d" % matchCount
         currentPercent = float(matchCount) / float(totalCount)
         ##        print "currentPercent = %f" % currentPercent
-        if currentPercent < percent + tolerance and currentPercent > percent - tolerance:
+        if (
+            currentPercent < percent + tolerance
+            and currentPercent > percent - tolerance
+        ):
             inTolerance = True
         elif greaterThan == True:
             if currentPercent < percent:
@@ -1088,7 +1105,9 @@ class HeightMap:
             else:
                 raise ValueError, "bad hmSeparation type"
 
-            if dimension > middle - (mc.hmMaxGrain * mc.hmGrainMargin) and dimension < middle + (mc.hmMaxGrain * mc.hmGrainMargin):
+            if dimension > middle - (
+                mc.hmMaxGrain * mc.hmGrainMargin
+            ) and dimension < middle + (mc.hmMaxGrain * mc.hmGrainMargin):
                 return True
 
         return False
@@ -1169,9 +1188,18 @@ class HeightMap:
                     bottomLeft = GetHmIndex(x, y + int(currentGrain))
                     if bottomLeft == -1:
                         continue  # this means no wrap in y direction
-                    bottomRight = GetHmIndex(x + int(currentGrain), y + int(currentGrain))
-                    middle = GetHmIndex(x + int(currentGrain / 2.0), y + int(currentGrain / 2.0))
-                    average = (self.heightMap[topLeft] + self.heightMap[topRight] + self.heightMap[bottomLeft] + self.heightMap[bottomRight]) / 4.0
+                    bottomRight = GetHmIndex(
+                        x + int(currentGrain), y + int(currentGrain)
+                    )
+                    middle = GetHmIndex(
+                        x + int(currentGrain / 2.0), y + int(currentGrain / 2.0)
+                    )
+                    average = (
+                        self.heightMap[topLeft]
+                        + self.heightMap[topRight]
+                        + self.heightMap[bottomLeft]
+                        + self.heightMap[bottomRight]
+                    ) / 4.0
                     displacement = h * PRand.random() - h / 2.0
                     self.heightMap[middle] = average + displacement
                     # now add that heuristic to the four points to diminish
@@ -1194,11 +1222,15 @@ class HeightMap:
                     if right != -1:  # if we're off map at this point go to next diamond
                         average = self.heightMap[left] + self.heightMap[right]
                         contributers = 2  # each diamond may have two or three contributers, 2 so far
-                        top = GetHmIndex(x + int(currentGrain / 2.0), y - int(currentGrain / 2.0))
+                        top = GetHmIndex(
+                            x + int(currentGrain / 2.0), y - int(currentGrain / 2.0)
+                        )
                         if top != -1:
                             contributers += 1
                             average += self.heightMap[top]
-                        bottom = GetHmIndex(x + int(currentGrain / 2.0), y + int(currentGrain / 2.0))
+                        bottom = GetHmIndex(
+                            x + int(currentGrain / 2.0), y + int(currentGrain / 2.0)
+                        )
                         if bottom != -1:
                             contributers += 1
                             average += self.heightMap[bottom]
@@ -1212,11 +1244,15 @@ class HeightMap:
                     if bottom != -1:
                         average = self.heightMap[top] + self.heightMap[bottom]
                         contributers = 2
-                        right = GetHmIndex(x + int(currentGrain / 2.0), y + int(currentGrain / 2.0))
+                        right = GetHmIndex(
+                            x + int(currentGrain / 2.0), y + int(currentGrain / 2.0)
+                        )
                         if right != -1:
                             contributers += 1
                             average += self.heightMap[right]
-                        left = GetHmIndex(x - int(currentGrain / 2.0), y + int(currentGrain / 2.0))
+                        left = GetHmIndex(
+                            x - int(currentGrain / 2.0), y + int(currentGrain / 2.0)
+                        )
                         if left != -1:
                             contributers += 1
                             average += self.heightMap[left]
@@ -1238,7 +1274,10 @@ class HeightMap:
         preSmoothMap = array("d")
         growthPlotList = list()
         plateList = list()
-        maxDistance = math.sqrt(pow(float(mc.distanceFilterSize / 2), 2) + pow(float(mc.distanceFilterSize / 2), 2))
+        maxDistance = math.sqrt(
+            pow(float(mc.distanceFilterSize / 2), 2)
+            + pow(float(mc.distanceFilterSize / 2), 2)
+        )
         # initialize maps
         for y in range(mc.hmHeight):
             for x in range(mc.hmWidth):
@@ -1296,7 +1335,10 @@ class HeightMap:
                 if ii == -1:
                     plateList[plateID].isOnMapEdge = True
                     continue
-                if self.plateMap[ii].plateID != plateID and self.plateMap[ii].plateID != 0:
+                if (
+                    self.plateMap[ii].plateID != plateID
+                    and self.plateMap[ii].plateID != 0
+                ):
                     borderMap[i] = True
                     borderMap[ii] = True
                 elif self.plateMap[ii].plateID == 0:
@@ -1341,12 +1383,19 @@ class HeightMap:
         # Stagger the plates somewhat to add interest
         steps = int(mc.plateStaggerRange / mc.plateStagger)
         for i in range(0, mc.hmHeight * mc.hmWidth):
-            if plateList[self.plateMap[i].plateID].isOnMapEdge and PRand.random() < mc.chanceForWaterEdgePlate:
+            if (
+                plateList[self.plateMap[i].plateID].isOnMapEdge
+                and PRand.random() < mc.chanceForWaterEdgePlate
+            ):
                 preSmoothMap[i] = 0.0
             elif plateList[self.plateMap[i].plateID].raiseOnly:
-                preSmoothMap[i] = (float(self.plateMap[i].plateID % steps) * mc.plateStagger) / 2.0 + 0.5
+                preSmoothMap[i] = (
+                    float(self.plateMap[i].plateID % steps) * mc.plateStagger
+                ) / 2.0 + 0.5
             else:
-                preSmoothMap[i] = float(self.plateMap[i].plateID % steps) * mc.plateStagger
+                preSmoothMap[i] = (
+                    float(self.plateMap[i].plateID % steps) * mc.plateStagger
+                )
 
         ##        self.printPreSmoothMap(preSmoothMap)
 
@@ -1361,15 +1410,23 @@ class HeightMap:
                 if borderMap[i] == True:
                     isBorder = True
                 plateID = self.plateMap[i].plateID
-                for yy in range(y - mc.distanceFilterSize / 2, y + mc.distanceFilterSize / 2 + 1, 1):
-                    for xx in range(x - mc.distanceFilterSize / 2, x + mc.distanceFilterSize / 2 + 1, 1):
+                for yy in range(
+                    y - mc.distanceFilterSize / 2, y + mc.distanceFilterSize / 2 + 1, 1
+                ):
+                    for xx in range(
+                        x - mc.distanceFilterSize / 2,
+                        x + mc.distanceFilterSize / 2 + 1,
+                        1,
+                    ):
                         ii = GetHmIndex(xx, yy)
                         if ii == -1:
                             continue
                         contributers += 1
                         avg += preSmoothMap[ii]
                         if isBorder and plateID != self.plateMap[ii].plateID:
-                            distance = math.sqrt(pow(float(y - yy), 2) + pow(float(x - xx), 2))
+                            distance = math.sqrt(
+                                pow(float(y - yy), 2) + pow(float(x - xx), 2)
+                            )
                             if distance < self.plateMap[ii].distanceList[plateID]:
                                 self.plateMap[ii].distanceList[plateID] = distance
                 avg = avg / float(contributers)
@@ -1386,13 +1443,29 @@ class HeightMap:
                 distanceWeight = maxDistance - self.plateMap[i].distanceList[plateID]
                 #                print "a1 = %f, a2 = %f" % (plateList[self.plateMap[i].plateID].angle,plateList[plateID].angle)
                 if plateList[plateID].seedX < plateList[self.plateMap[i].plateID].seedX:
-                    angleDifference = AngleDifference(plateList[self.plateMap[i].plateID].angle, plateList[plateID].angle)
+                    angleDifference = AngleDifference(
+                        plateList[self.plateMap[i].plateID].angle,
+                        plateList[plateID].angle,
+                    )
                 else:
-                    angleDifference = AngleDifference(plateList[plateID].angle, plateList[self.plateMap[i].plateID].angle)
+                    angleDifference = AngleDifference(
+                        plateList[plateID].angle,
+                        plateList[self.plateMap[i].plateID].angle,
+                    )
                 #                print angleDifference
                 ripple = (
                     (
-                        pow(math.cos(mc.rippleFrequency * self.plateMap[i].distanceList[plateID]) * (-self.plateMap[i].distanceList[plateID] / maxDistance + 1), 2)
+                        pow(
+                            math.cos(
+                                mc.rippleFrequency
+                                * self.plateMap[i].distanceList[plateID]
+                            )
+                            * (
+                                -self.plateMap[i].distanceList[plateID] / maxDistance
+                                + 1
+                            ),
+                            2,
+                        )
                         + (-self.plateMap[i].distanceList[plateID] / maxDistance + 1)
                     )
                     * mc.rippleAmplitude
@@ -1404,7 +1477,9 @@ class HeightMap:
                 avgRipple = 0.0
             else:
                 avgRipple = avgRippleTop / avgRippleBottom
-            self.plateHeightMap[i] += avgRipple - (avgRipple * PRand.random() * mc.plateNoiseFactor)
+            self.plateHeightMap[i] += avgRipple - (
+                avgRipple * PRand.random() * mc.plateNoiseFactor
+            )
 
         NormalizeMap(self.plateHeightMap, mc.hmWidth, mc.hmHeight)
 
@@ -1422,26 +1497,38 @@ class HeightMap:
                 i = GetHmIndex(x, y)
                 if mc.westMargin == True:
                     if x < marginSize:
-                        self.heightMap[i] *= (float(x) / float(marginSize)) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
+                        self.heightMap[i] *= (float(x) / float(marginSize)) * (
+                            1.0 - mc.hmMarginDepth
+                        ) + mc.hmMarginDepth
                 if mc.eastMargin == True:
                     if mc.hmWidth - x < marginSize:
-                        self.heightMap[i] *= (float(mc.hmWidth - x) / float(marginSize)) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
+                        self.heightMap[i] *= (
+                            float(mc.hmWidth - x) / float(marginSize)
+                        ) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
                 if mc.southMargin == True:
                     if y < marginSize:
-                        self.heightMap[i] *= (float(y) / float(marginSize)) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
+                        self.heightMap[i] *= (float(y) / float(marginSize)) * (
+                            1.0 - mc.hmMarginDepth
+                        ) + mc.hmMarginDepth
                 if mc.northMargin == True:
                     if mc.hmHeight - y < marginSize:
-                        self.heightMap[i] *= (float(mc.hmHeight - y) / float(marginSize)) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
+                        self.heightMap[i] *= (
+                            float(mc.hmHeight - y) / float(marginSize)
+                        ) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
 
                 if mc.hmSeparation == mc.NORTH_SOUTH_SEPARATION:
                     difference = abs((mc.hmHeight / 2) - y)
                     if difference < marginSize:
-                        self.heightMap[i] *= (float(difference) / float(marginSize)) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
+                        self.heightMap[i] *= (float(difference) / float(marginSize)) * (
+                            1.0 - mc.hmMarginDepth
+                        ) + mc.hmMarginDepth
 
                 elif mc.hmSeparation == mc.EAST_WEST_SEPARATION:
                     difference = abs((mc.hmWidth / 2) - x)
                     if difference < marginSize:
-                        self.heightMap[i] *= (float(difference) / float(marginSize)) * (1.0 - mc.hmMarginDepth) + mc.hmMarginDepth
+                        self.heightMap[i] *= (float(difference) / float(marginSize)) * (
+                            1.0 - mc.hmMarginDepth
+                        ) + mc.hmMarginDepth
 
         ##        #Now lets square the heightmap to simulate erosion
         ##        for i in range(mc.hmWidth * mc.hmHeight):
@@ -1475,7 +1562,9 @@ class HeightMap:
         self.heightMap = newHeightMap
 
     def calculateSeaLevel(self):
-        self.seaLevel = FindValueFromPercent(self.heightMap, mc.hmWidth, mc.hmHeight, mc.landPercent, 0.02, True)
+        self.seaLevel = FindValueFromPercent(
+            self.heightMap, mc.hmWidth, mc.hmHeight, mc.landPercent, 0.02, True
+        )
         return
 
     def isBelowSeaLevel(self, x, y):
@@ -1516,8 +1605,14 @@ class HeightMap:
 
     def isSeedBlocked(self, plateList, seedX, seedY):
         for plate in plateList:
-            if seedX > plate.seedX - mc.minSeedRange and seedX < plate.seedX + mc.minSeedRange:
-                if seedY > plate.seedY - mc.minSeedRange and seedY < plate.seedY + mc.minSeedRange:
+            if (
+                seedX > plate.seedX - mc.minSeedRange
+                and seedX < plate.seedX + mc.minSeedRange
+            ):
+                if (
+                    seedY > plate.seedY - mc.minSeedRange
+                    and seedY < plate.seedY + mc.minSeedRange
+                ):
                     return True
         # Check for edge
         if seedX < mc.minEdgeRange or seedX >= (mc.hmWidth + 1) - mc.minEdgeRange:
@@ -1528,7 +1623,9 @@ class HeightMap:
 
     def GetInfluFromDistance(self, sinkValue, peakValue, searchRadius, distance):
         influence = peakValue
-        maxDistance = math.sqrt(pow(float(searchRadius), 2) + pow(float(searchRadius), 2))
+        maxDistance = math.sqrt(
+            pow(float(searchRadius), 2) + pow(float(searchRadius), 2)
+        )
         # minDistance = 1.0
         influence -= ((peakValue - sinkValue) * (distance - 1.0)) / (maxDistance - 1.0)
         return influence
@@ -1598,7 +1695,9 @@ class HeightMap:
             lineString = ""
             for x in range(0, mc.hmWidth, 1):
                 i = GetHmIndex(x, y)
-                mapLoc = int((self.heightMap[i] - self.seaLevel) / (1.0 - self.seaLevel) * 10)
+                mapLoc = int(
+                    (self.heightMap[i] - self.seaLevel) / (1.0 - self.seaLevel) * 10
+                )
                 # mapLoc = int(self.heightMap[i] * 10)
                 if self.heightMap[i] < self.seaLevel:
                     lineString += "."
@@ -1721,7 +1820,9 @@ class ClimateMap:
                 winterAvg = 0
                 i = GetHmIndex(x, y)
                 for yy in range(y - mc.filterSize / 2, y + mc.filterSize / 2 + 1, 1):
-                    for xx in range(x - mc.filterSize / 2, x + mc.filterSize / 2 + 1, 1):
+                    for xx in range(
+                        x - mc.filterSize / 2, x + mc.filterSize / 2 + 1, 1
+                    ):
                         ii = GetHmIndex(xx, yy)
                         if ii == -1:
                             continue
@@ -1740,7 +1841,16 @@ class ClimateMap:
                 # average summer and winter
                 avgTemp = (self.summerTempsMap[i] + self.winterTempsMap[i]) / 2.0
                 # cool map for altitude
-                self.averageTempMap.append(avgTemp * (1.0 - pow(hm.getAltitudeAboveSeaLevel(x, y), mc.temperatureLossCurve) * mc.heatLostAtOne))
+                self.averageTempMap.append(
+                    avgTemp
+                    * (
+                        1.0
+                        - pow(
+                            hm.getAltitudeAboveSeaLevel(x, y), mc.temperatureLossCurve
+                        )
+                        * mc.heatLostAtOne
+                    )
+                )
 
         # init moisture and rain maps
         for i in range(mc.hmHeight * mc.hmWidth):
@@ -1856,7 +1966,11 @@ class ClimateMap:
                         xString = "<"
                     else:
                         xString = ">"
-                    print "Wind direction ------------------------------- %s%s - %s" % (xString, yString, windZones.GetZoneName(zone))
+                    print "Wind direction ------------------------------- %s%s - %s" % (
+                        xString,
+                        yString,
+                        windZones.GetZoneName(zone),
+                    )
                 nList.append((plot.x, plot.y + dy))
                 nList.append((plot.x + dx, plot.y))
                 nList.append((plot.x + dx, plot.y + dy))
@@ -1873,7 +1987,10 @@ class ClimateMap:
                     continue  # dead end, dump appropriate rain
             moisturePerNeighbor = self.moistureMap[i] / float(len(nList))
             if bDebug:
-                print "moisturePerNeighbor = %f for %d neighbors" % (moisturePerNeighbor, len(nList))
+                print "moisturePerNeighbor = %f for %d neighbors" % (
+                    moisturePerNeighbor,
+                    len(nList),
+                )
 
             geostrophicFactor = 1.0
             if bGeostrophic:
@@ -1889,22 +2006,30 @@ class ClimateMap:
                 if bGeostrophic:
                     cost = self.getRainCost(plot.x, plot.y, xx, yy, plot.uplift)
                 else:
-                    cost = self.getRainCost(plot.x, plot.y, xx, yy, countRemaining / mc.monsoonUplift)
+                    cost = self.getRainCost(
+                        plot.x, plot.y, xx, yy, countRemaining / mc.monsoonUplift
+                    )
 
                 if bDebug:
                     print "  rain cost = %f" % cost
 
                 # Convert moisture into rain
                 # self.moistureMap[i] -= cost * moisturePerNeighbor (this line is unecessary actually, we are finished with moisture map for this plot)
-                self.rainFallMap[i] += cost * moisturePerNeighbor * geostrophicFactor  # geostrophicFactor is not involved with moisture, only to weigh against monsoons
+                self.rainFallMap[i] += (
+                    cost * moisturePerNeighbor * geostrophicFactor
+                )  # geostrophicFactor is not involved with moisture, only to weigh against monsoons
                 if bDebug:
                     print "  dropping %f rain here" % (cost * moisturePerNeighbor)
 
                 # send remaining moisture to neighbor
                 if ii != -1:
-                    self.moistureMap[ii] += moisturePerNeighbor - (cost * moisturePerNeighbor)
+                    self.moistureMap[ii] += moisturePerNeighbor - (
+                        cost * moisturePerNeighbor
+                    )
                     if bDebug:
-                        print "  remaining moisture to neighbor = %f" % (moisturePerNeighbor - (cost * moisturePerNeighbor))
+                        print "  remaining moisture to neighbor = %f" % (
+                            moisturePerNeighbor - (cost * moisturePerNeighbor)
+                        )
 
             if bDebug:
                 print "total rainfall = %f" % self.rainFallMap[i]
@@ -1912,11 +2037,16 @@ class ClimateMap:
 
     def getRainCost(self, x1, y1, x2, y2, distanceToUplift):
         cost = mc.minimumRainCost
-        cRange = 1.0 - mc.minimumRainCost / 1.0  # We don't want to go over 1.0 so the range is reduced
+        cRange = (
+            1.0 - mc.minimumRainCost / 1.0
+        )  # We don't want to go over 1.0 so the range is reduced
         upliftCost = (1.0 / (float(distanceToUplift) + 1.0)) * cRange
         i = GetHmIndex(x1, y1)
         ii = GetHmIndex(x2, y2)
-        cost += max((self.averageTempMap[ii] - self.averageTempMap[i]) * 2.0 * cRange, upliftCost)
+        cost += max(
+            (self.averageTempMap[ii] - self.averageTempMap[i]) * 2.0 * cRange,
+            upliftCost,
+        )
         return cost
 
     def initializeTempMap(self, tempMap, tropic):
@@ -1942,12 +2072,16 @@ class ClimateMap:
 
     def getLatitude(self, y):
         latitudeRange = mc.topLatitude - mc.bottomLatitude
-        degreesPerDY = float(latitudeRange) / float(mc.hmHeight - mc.northCrop - mc.southCrop)
+        degreesPerDY = float(latitudeRange) / float(
+            mc.hmHeight - mc.northCrop - mc.southCrop
+        )
         if y > mc.hmHeight - mc.northCrop:
             return mc.topLatitude
         if y < mc.southCrop:
             return mc.bottomLatitude
-        latitude = mc.bottomLatitude + (int(round(float(y - mc.southCrop) * degreesPerDY)))
+        latitude = mc.bottomLatitude + (
+            int(round(float(y - mc.southCrop) * degreesPerDY))
+        )
         return latitude
 
     def printRainFallMap(self, bOcean):
@@ -2123,9 +2257,15 @@ class SmallMaps:
 
     def initialize(self):
         self.cropMaps()
-        newHeightMap = ShrinkMap(hm.heightMap, mc.hmWidth, mc.hmHeight, mc.width, mc.height)
-        newRainFallMap = ShrinkMap(cm.rainFallMap, mc.hmWidth, mc.hmHeight, mc.width, mc.height)
-        newAverageTempMap = ShrinkMap(cm.averageTempMap, mc.hmWidth, mc.hmHeight, mc.width, mc.height)
+        newHeightMap = ShrinkMap(
+            hm.heightMap, mc.hmWidth, mc.hmHeight, mc.width, mc.height
+        )
+        newRainFallMap = ShrinkMap(
+            cm.rainFallMap, mc.hmWidth, mc.hmHeight, mc.width, mc.height
+        )
+        newAverageTempMap = ShrinkMap(
+            cm.averageTempMap, mc.hmWidth, mc.hmHeight, mc.width, mc.height
+        )
 
         self.heightMap = array("d")
         self.rainFallMap = array("d")
@@ -2228,8 +2368,12 @@ class SmallMaps:
                 if self.isBelowSeaLevel(x, y):
                     diffMap[i] = 0.0
 
-        peakHeight = FindValueFromPercent(diffMap, mc.width, mc.height, mc.PeakPercent, 0.01, True)
-        hillHeight = FindValueFromPercent(diffMap, mc.width, mc.height, mc.HillPercent, 0.01, True)
+        peakHeight = FindValueFromPercent(
+            diffMap, mc.width, mc.height, mc.PeakPercent, 0.01, True
+        )
+        hillHeight = FindValueFromPercent(
+            diffMap, mc.width, mc.height, mc.HillPercent, 0.01, True
+        )
 
         self.plotMap = array("i")
         # initialize map with 0CEAN
@@ -2254,9 +2398,13 @@ class SmallMaps:
                 i = GetIndex(x, y)
                 if self.plotMap[i] == mc.LAND:
                     randomNum = PRand.random()
-                    if randomNum < mc.PeakChanceAtOne * self.getAltitudeAboveSeaLevel(x, y):
+                    if randomNum < mc.PeakChanceAtOne * self.getAltitudeAboveSeaLevel(
+                        x, y
+                    ):
                         self.plotMap[i] = mc.PEAK
-                    elif randomNum < mc.HillChanceAtOne * self.getAltitudeAboveSeaLevel(x, y):
+                    elif randomNum < mc.HillChanceAtOne * self.getAltitudeAboveSeaLevel(
+                        x, y
+                    ):
                         self.plotMap[i] = mc.HILLS
 
         # break up large clusters of hills and peaks
@@ -2305,8 +2453,12 @@ class SmallMaps:
                 if self.isBelowSeaLevel(x, y):
                     self.rainFallMap[i] = 0.0
 
-        self.desertThreshold = FindValueFromPercent(self.rainFallMap, mc.width, mc.height, mc.DesertPercent, 0.001, False)
-        self.plainsThreshold = FindValueFromPercent(self.rainFallMap, mc.width, mc.height, mc.PlainsPercent, 0.001, False)
+        self.desertThreshold = FindValueFromPercent(
+            self.rainFallMap, mc.width, mc.height, mc.DesertPercent, 0.001, False
+        )
+        self.plainsThreshold = FindValueFromPercent(
+            self.rainFallMap, mc.width, mc.height, mc.PlainsPercent, 0.001, False
+        )
         for y in range(mc.height):
             for x in range(mc.width):
                 i = GetIndex(x, y)
@@ -2327,7 +2479,16 @@ class SmallMaps:
                     elif self.averageTempMap[i] < mc.TundraTemp:
                         self.terrainMap[i] = mc.TUNDRA
                     else:
-                        if self.rainFallMap[i] < (PRand.random() * (self.desertThreshold - minRain) + self.desertThreshold - minRain) / 2.0 + minRain:
+                        if (
+                            self.rainFallMap[i]
+                            < (
+                                PRand.random() * (self.desertThreshold - minRain)
+                                + self.desertThreshold
+                                - minRain
+                            )
+                            / 2.0
+                            + minRain
+                        ):
                             self.terrainMap[i] = mc.DESERT
                         else:
                             self.terrainMap[i] = mc.PLAINS
@@ -2337,7 +2498,19 @@ class SmallMaps:
                     elif self.averageTempMap[i] < mc.TundraTemp:
                         self.terrainMap[i] = mc.TUNDRA
                     else:
-                        if self.rainFallMap[i] < ((PRand.random() * (self.plainsThreshold - self.desertThreshold) + self.plainsThreshold - self.desertThreshold)) / 2.0 + self.desertThreshold:
+                        if (
+                            self.rainFallMap[i]
+                            < (
+                                (
+                                    PRand.random()
+                                    * (self.plainsThreshold - self.desertThreshold)
+                                    + self.plainsThreshold
+                                    - self.desertThreshold
+                                )
+                            )
+                            / 2.0
+                            + self.desertThreshold
+                        ):
                             self.terrainMap[i] = mc.PLAINS
                         else:
                             self.terrainMap[i] = mc.GRASS
@@ -2363,9 +2536,18 @@ class SmallMaps:
                         ii = GetIndex(xx, yy)
                         if ii == -1:
                             continue
-                        if self.terrainMap[ii] != mc.OCEAN and self.terrainMap[ii] != mc.COAST and self.terrainMap[ii] != mc.SNOW:
+                        if (
+                            self.terrainMap[ii] != mc.OCEAN
+                            and self.terrainMap[ii] != mc.COAST
+                            and self.terrainMap[ii] != mc.SNOW
+                        ):
                             lowerFound = True
-                        if self.terrainMap[ii] != mc.TUNDRA and self.terrainMap[ii] != mc.SNOW and self.terrainMap[ii] != mc.OCEAN and self.terrainMap[ii] != mc.COAST:
+                        if (
+                            self.terrainMap[ii] != mc.TUNDRA
+                            and self.terrainMap[ii] != mc.SNOW
+                            and self.terrainMap[ii] != mc.OCEAN
+                            and self.terrainMap[ii] != mc.COAST
+                        ):
                             self.terrainMap[i] = mc.TUNDRA
                         if self.terrainMap[ii] == mc.DESERT:
                             self.terrainMap[i] = mc.PLAINS
@@ -2378,7 +2560,12 @@ class SmallMaps:
                         ii = GetIndex(xx, yy)
                         if ii == -1:
                             continue
-                        if self.terrainMap[ii] != mc.OCEAN and self.terrainMap[ii] != mc.COAST and self.terrainMap[ii] != mc.SNOW and self.terrainMap[ii] != mc.TUNDRA:
+                        if (
+                            self.terrainMap[ii] != mc.OCEAN
+                            and self.terrainMap[ii] != mc.COAST
+                            and self.terrainMap[ii] != mc.SNOW
+                            and self.terrainMap[ii] != mc.TUNDRA
+                        ):
                             lowerFound = True
                         if self.terrainMap[ii] == mc.DESERT:
                             self.terrainMap[i] = mc.PLAINS
@@ -2392,7 +2579,10 @@ class SmallMaps:
                     for direction in range(1, 9, 1):
                         xx, yy = GetXYFromDirection(x, y, direction)
                         ii = GetIndex(xx, yy)
-                        if self.terrainMap[ii] == mc.SNOW or self.terrainMap[ii] == mc.TUNDRA:
+                        if (
+                            self.terrainMap[ii] == mc.SNOW
+                            or self.terrainMap[ii] == mc.TUNDRA
+                        ):
                             higherFound = True
                     if higherFound and self.plotMap[i] != mc.LAND:
                         self.plotMap[i] = mc.LAND
@@ -2412,7 +2602,9 @@ class SmallMaps:
             lineString = ""
             for x in range(0, mc.width, 1):
                 i = GetIndexGeneral(x, y, mc.width, mc.height)
-                mapLoc = int((self.heightMap[i] - hm.seaLevel) / (1.0 - hm.seaLevel) * 10)
+                mapLoc = int(
+                    (self.heightMap[i] - hm.seaLevel) / (1.0 - hm.seaLevel) * 10
+                )
                 # mapLoc = int(self.heightMap[i] * 10)
                 if self.heightMap[i] < hm.seaLevel:
                     lineString += "."
@@ -2494,7 +2686,11 @@ class PangaeaBreaker:
         self.areaMap.defineAreas(isHmWaterMatch)
         ##        self.areaMap.PrintAreaMap()
         meteorCount = 0
-        while not mc.AllowPangeas and self.isPangea() and meteorCount < mc.maximumMeteorCount:
+        while (
+            not mc.AllowPangeas
+            and self.isPangea()
+            and meteorCount < mc.maximumMeteorCount
+        ):
             pangeaDetected = True
             x, y = self.getMeteorStrike()
             print "A meteor has struck the Earth at %(x)d, %(y)d!!" % {"x": x, "y": y}
@@ -2719,7 +2915,9 @@ class PangaeaBreaker:
 
     def castMeteorUponTheEarth(self, x, y):
         ##        starttime = time.clock()
-        radius = PRand.randint(mc.minimumMeteorSize, max(mc.minimumMeteorSize + 1, mc.hmWidth / 16))
+        radius = PRand.randint(
+            mc.minimumMeteorSize, max(mc.minimumMeteorSize + 1, mc.hmWidth / 16)
+        )
         circlePointList = self.getCirclePoints(x, y, radius)
         ##        print "circlePointList"
         ##        print circlePointList
@@ -3240,7 +3438,10 @@ class Areamap:
         if debugReport:
             print ""
             print "areaID = %(a)4d" % {"a": areaID}
-            print "matchValue = %(w)2d, landOffset = %(l)2d" % {"w": matchValue, "l": landOffset}
+            print "matchValue = %(w)2d, landOffset = %(l)2d" % {
+                "w": matchValue,
+                "l": landOffset,
+            }
             print str(seg)
             print "Going left"
         if mc.WrapX == True:
@@ -3253,8 +3454,13 @@ class Areamap:
                 print "xLeftExtreme = %(xl)4d" % {"xl": xLeftExtreme}
             if debugReport:
                 print "i = %d, seg.y + seg.dy = %d" % (i, seg.y + seg.dy)
-                print "areaMap[i] = %d, matchValue match = %d" % (self.areaMap[i], matchValue == matchFunction(xLeftExtreme, seg.y + seg.dy))
-            if self.areaMap[i] == 0 and matchValue == matchFunction(xLeftExtreme, seg.y + seg.dy):
+                print "areaMap[i] = %d, matchValue match = %d" % (
+                    self.areaMap[i],
+                    matchValue == matchFunction(xLeftExtreme, seg.y + seg.dy),
+                )
+            if self.areaMap[i] == 0 and matchValue == matchFunction(
+                xLeftExtreme, seg.y + seg.dy
+            ):
                 self.areaMap[i] = areaID
                 self.size += 1
                 lineFound = True
@@ -3270,7 +3476,9 @@ class Areamap:
             print "Going Right"
         # now scan right to find extreme right, place each found segment on stack
         #        xRightExtreme = seg.xLeft - landOffset #needed sometimes? one time it was not initialized before use.
-        xRightExtreme = seg.xLeft  # needed sometimes? one time it was not initialized before use.
+        xRightExtreme = (
+            seg.xLeft
+        )  # needed sometimes? one time it was not initialized before use.
         if mc.WrapX == True:
             xStop = self.mapWidth * 20
         else:
@@ -3281,26 +3489,37 @@ class Areamap:
             i = self.getIndex(xRightExtreme, seg.y + seg.dy)
             if debugReport:
                 print "i = %d, seg.y + seg.dy = %d" % (i, seg.y + seg.dy)
-                print "areaMap[i] = %d, matchValue match = %d" % (self.areaMap[i], matchValue == matchFunction(xRightExtreme, seg.y + seg.dy))
-            if self.areaMap[i] == 0 and matchValue == matchFunction(xRightExtreme, seg.y + seg.dy):
+                print "areaMap[i] = %d, matchValue match = %d" % (
+                    self.areaMap[i],
+                    matchValue == matchFunction(xRightExtreme, seg.y + seg.dy),
+                )
+            if self.areaMap[i] == 0 and matchValue == matchFunction(
+                xRightExtreme, seg.y + seg.dy
+            ):
                 self.areaMap[i] = areaID
                 self.size += 1
                 if lineFound == False:
                     lineFound = True
                     xLeftExtreme = xRightExtreme  # starting new line
                     if debugReport:
-                        print "starting new line at xLeftExtreme= %(xl)4d" % {"xl": xLeftExtreme}
+                        print "starting new line at xLeftExtreme= %(xl)4d" % {
+                            "xl": xLeftExtreme
+                        }
             elif lineFound == True:  # found the right end of a line segment!
                 lineFound = False
                 # put same direction on stack
-                newSeg = LineSegment(seg.y + seg.dy, xLeftExtreme, xRightExtreme - 1, seg.dy)
+                newSeg = LineSegment(
+                    seg.y + seg.dy, xLeftExtreme, xRightExtreme - 1, seg.dy
+                )
                 self.segStack.append(newSeg)
                 if debugReport:
                     print "same direction to stack", str(newSeg)
                 # determine if we must put reverse direction on stack
                 if xLeftExtreme < seg.xLeft or xRightExtreme >= seg.xRight:
                     # out of shadow so put reverse direction on stack also
-                    newSeg = LineSegment(seg.y + seg.dy, xLeftExtreme, xRightExtreme - 1, -seg.dy)
+                    newSeg = LineSegment(
+                        seg.y + seg.dy, xLeftExtreme, xRightExtreme - 1, -seg.dy
+                    )
                     self.segStack.append(newSeg)
                     if debugReport:
                         print "opposite direction to stack", str(newSeg)
@@ -3321,14 +3540,18 @@ class Areamap:
                 print "still needing to stack some segs"
             lineFound = False
             # put same direction on stack
-            newSeg = LineSegment(seg.y + seg.dy, xLeftExtreme, xRightExtreme - 1, seg.dy)
+            newSeg = LineSegment(
+                seg.y + seg.dy, xLeftExtreme, xRightExtreme - 1, seg.dy
+            )
             self.segStack.append(newSeg)
             if debugReport:
                 print str(newSeg)
             # determine if we must put reverse direction on stack
             if xLeftExtreme < seg.xLeft or xRightExtreme - 1 > seg.xRight:
                 # out of shadow so put reverse direction on stack also
-                newSeg = LineSegment(seg.y + seg.dy, xLeftExtreme, xRightExtreme - 1, -seg.dy)
+                newSeg = LineSegment(
+                    seg.y + seg.dy, xLeftExtreme, xRightExtreme - 1, -seg.dy
+                )
                 self.segStack.append(newSeg)
                 if debugReport:
                     print str(newSeg)
@@ -3373,7 +3596,12 @@ class LineSegment:
         self.dy = dy
 
     def __str__(self):
-        string = "y = %(y)3d, xLeft = %(xl)3d, xRight = %(xr)3d, dy = %(dy)2d" % {"y": self.y, "xl": self.xLeft, "xr": self.xRight, "dy": self.dy}
+        string = "y = %(y)3d, xLeft = %(xl)3d, xRight = %(xr)3d, dy = %(dy)2d" % {
+            "y": self.y,
+            "xl": self.xLeft,
+            "xr": self.xRight,
+            "dy": self.dy,
+        }
         return string
 
 
@@ -3384,7 +3612,11 @@ class Area:
         self.water = water
 
     def __str__(self):
-        string = "{ID = %(i)4d, size = %(s)4d, water = %(w)1d}" % {"i": self.ID, "s": self.size, "w": self.water}
+        string = "{ID = %(i)4d, size = %(s)4d, water = %(w)1d}" % {
+            "i": self.ID,
+            "s": self.size,
+            "w": self.water,
+        }
         return string
 
 
@@ -3818,7 +4050,9 @@ class BonusPlacer:
             plot = gameMap.plotByIndex(index)
             x = plot.getX()
             y = plot.getY()
-            if (ignoreClass and self.PlotCanHaveBonus(plot, bonus.eBonus, False, True)) or self.CanPlaceBonusAt(plot, bonus.eBonus, False, True):
+            if (
+                ignoreClass and self.PlotCanHaveBonus(plot, bonus.eBonus, False, True)
+            ) or self.CanPlaceBonusAt(plot, bonus.eBonus, False, True):
                 # temporarily remove any feature
                 featureEnum = plot.getFeatureType()
                 if featureEnum == featureForest:
@@ -3868,7 +4102,11 @@ class BonusPlacer:
                 bonus.currentBonusCount += 1
                 # restore the feature if possible
                 if featureEnum == featureForest:
-                    if bonusInfo == None or bonusInfo.isFeature(featureEnum) or (bonusInfo.getTechReveal() != TechTypes.NO_TECH):
+                    if (
+                        bonusInfo == None
+                        or bonusInfo.isFeature(featureEnum)
+                        or (bonusInfo.getTechReveal() != TechTypes.NO_TECH)
+                    ):
                         plot.setFeatureType(featureEnum, featureVariety)
                 groupRange = bonusInfo.getGroupRange()
                 for dx in range(-groupRange, groupRange + 1):
@@ -3877,21 +4115,37 @@ class BonusPlacer:
                             loopPlot = self.plotXY(x, y, dx, dy)
                             if loopPlot != None:
                                 if loopPlot.getX() == -1:
-                                    raise ValueError, "plotXY returns invalid plots plot= %(x)d, %(y)d" % {"x": x, "y": y}
+                                    raise ValueError, "plotXY returns invalid plots plot= %(x)d, %(y)d" % {
+                                        "x": x,
+                                        "y": y,
+                                    }
                                 if self.CanPlaceBonusAt(loopPlot, eBonus, False, False):
                                     if PRand.randint(0, 99) < bonusInfo.getGroupRand():
                                         # temporarily remove any feature
                                         featureEnum = loopPlot.getFeatureType()
                                         if featureEnum == featureForest:
-                                            featureVariety = loopPlot.getFeatureVariety()
-                                            loopPlot.setFeatureType(FeatureTypes.NO_FEATURE, -1)
+                                            featureVariety = (
+                                                loopPlot.getFeatureVariety()
+                                            )
+                                            loopPlot.setFeatureType(
+                                                FeatureTypes.NO_FEATURE, -1
+                                            )
                                         # place bonus
                                         loopPlot.setBonusType(eBonus)
                                         bonus.currentBonusCount += 1
                                         # restore the feature if possible
                                         if featureEnum == featureForest:
-                                            if bonusInfo == None or bonusInfo.isFeature(featureEnum) or (bonusInfo.getTechReveal() != TechTypes.NO_TECH):
-                                                loopPlot.setFeatureType(featureEnum, featureVariety)
+                                            if (
+                                                bonusInfo == None
+                                                or bonusInfo.isFeature(featureEnum)
+                                                or (
+                                                    bonusInfo.getTechReveal()
+                                                    != TechTypes.NO_TECH
+                                                )
+                                            ):
+                                                loopPlot.setFeatureType(
+                                                    featureEnum, featureVariety
+                                                )
             if bonusPlaced:
                 break
         return bonusPlaced
@@ -3924,12 +4178,16 @@ class BonusPlacer:
             if bonusInfo.isOneArea() == True:
                 numUniqueBonuses += 1
                 minAreaSize = bonusInfo.getMinAreaSize()
-                if (minLandAreaSize == -1 or minLandAreaSize > minAreaSize) and minAreaSize > 0:
+                if (
+                    minLandAreaSize == -1 or minLandAreaSize > minAreaSize
+                ) and minAreaSize > 0:
                     minLandAreaSize = minAreaSize
         self.bonusList = ShuffleList(self.bonusList)
         numBonuses = gc.getNumBonusInfos()
         for i in range(numBonuses):
-            self.bonusList[i].desiredBonusCount = self.CalculateNumBonusesToAdd(self.bonusList[i].eBonus)
+            self.bonusList[i].desiredBonusCount = self.CalculateNumBonusesToAdd(
+                self.bonusList[i].eBonus
+            )
             bonusInfo = gc.getBonusInfo(self.bonusList[i].eBonus)
             eBonus = self.bonusList[i].eBonus
             if bonusInfo.isOneArea() == False:
@@ -3939,7 +4197,9 @@ class BonusPlacer:
             for area in self.areas:
                 if area.getNumTiles() >= minLandAreaSize:
                     aS = AreaSuitability(area.getID())
-                    aS.suitability, aS.numPossible = self.CalculateAreaSuitability(area, eBonus)
+                    aS.suitability, aS.numPossible = self.CalculateAreaSuitability(
+                        area, eBonus
+                    )
                     areaSuitabilityList.append(aS)
             ##                    print "suitability on areaID=%(aid)d, size=%(s)d is %(r)f" % \
             ##                    {"aid":area.getID(),"s":area.getNumTiles(),"r":aS.suitability}
@@ -3968,13 +4228,21 @@ class BonusPlacer:
             return False
         for i in range(DirectionTypes.NUM_DIRECTION_TYPES):
             loopPlot = plotDirection(x, y, DirectionTypes(i))
-            if loopPlot.getBonusType(TeamTypes.NO_TEAM) != BonusTypes.NO_BONUS and loopPlot.getBonusType(TeamTypes.NO_TEAM) != eBonus:
+            if (
+                loopPlot.getBonusType(TeamTypes.NO_TEAM) != BonusTypes.NO_BONUS
+                and loopPlot.getBonusType(TeamTypes.NO_TEAM) != eBonus
+            ):
                 return False
 
         bonusInfo = gc.getBonusInfo(eBonus)
         classInfo = gc.getBonusClassInfo(bonusInfo.getBonusClassType())
         if plot.isWater() == True:
-            if gameMap.getNumBonusesOnLand(eBonus) * 100 / (gameMap.getNumBonuses(eBonus) + 1) < bonusInfo.getMinLandPercent():
+            if (
+                gameMap.getNumBonusesOnLand(eBonus)
+                * 100
+                / (gameMap.getNumBonuses(eBonus) + 1)
+                < bonusInfo.getMinLandPercent()
+            ):
                 return False
         # Make sure there are no bonuses of the same class (but a different type) nearby:
         if classInfo != None:
@@ -3990,10 +4258,16 @@ class BonusPlacer:
                     loopPlot = self.plotXY(x, y, dx, dy)
                     if loopPlot != None:
                         if areaID == loopPlot.getArea():
-                            if plotDistance(x, y, loopPlot.getX(), loopPlot.getY()) <= iRange:
+                            if (
+                                plotDistance(x, y, loopPlot.getX(), loopPlot.getY())
+                                <= iRange
+                            ):
                                 eOtherBonus = loopPlot.getBonusType(TeamTypes.NO_TEAM)
                                 if eOtherBonus != BonusTypes.NO_BONUS:
-                                    if gc.getBonusInfo(eOtherBonus).getBonusClassType() == bonusInfo.getBonusClassType():
+                                    if (
+                                        gc.getBonusInfo(eOtherBonus).getBonusClassType()
+                                        == bonusInfo.getBonusClassType()
+                                    ):
                                         return False
         # Make sure there are no bonuses of the same type nearby:
         iRange = bonusInfo.getUniqueRange()
@@ -4003,7 +4277,10 @@ class BonusPlacer:
                 loopPlot = self.plotXY(x, y, dx, dy)
                 if loopPlot != None:
                     if areaID == loopPlot.getArea():
-                        if plotDistance(x, y, loopPlot.getX(), loopPlot.getY()) <= iRange:
+                        if (
+                            plotDistance(x, y, loopPlot.getX(), loopPlot.getY())
+                            <= iRange
+                        ):
                             eOtherBonus = loopPlot.getBonusType(TeamTypes.NO_TEAM)
                             if eOtherBonus != BonusTypes.NO_BONUS:
                                 if eOtherBonus == eBonus:
@@ -4269,11 +4546,15 @@ class StartingPlotFinder:
 
             # Record the ideal number of players for each continent
             for startingArea in self.startingAreaList:
-                startingArea.idealNumberOfPlayers = int(round(float(startingArea.rawValue) / float(oldWorldValuePerPlayer)))
+                startingArea.idealNumberOfPlayers = int(
+                    round(float(startingArea.rawValue) / float(oldWorldValuePerPlayer))
+                )
 
             # Now we want best first
             self.startingAreaList.reverse()
-            print "number of starting areas is %(s)3d" % {"s": len(self.startingAreaList)}
+            print "number of starting areas is %(s)3d" % {
+                "s": len(self.startingAreaList)
+            }
 
             iterations = 0
             while True:
@@ -4293,7 +4574,9 @@ class StartingPlotFinder:
 
                 # Choose areas
                 for startingArea in self.startingAreaList:
-                    if startingArea.idealNumberOfPlayers + playersPlaced <= len(shuffledPlayers):
+                    if startingArea.idealNumberOfPlayers + playersPlaced <= len(
+                        shuffledPlayers
+                    ):
                         chosenStartingAreas.append(startingArea)
                         playersPlaced += startingArea.idealNumberOfPlayers
 
@@ -4337,17 +4620,26 @@ class StartingPlotFinder:
                 if self.plotList[i].vacant == True:
                     continue
                 currentTotalValue = self.plotList[i].totalValue
-                percentLacking = 1.0 - (float(currentTotalValue) / float(bestTotalValue))
+                percentLacking = 1.0 - (
+                    float(currentTotalValue) / float(bestTotalValue)
+                )
                 if percentLacking > 0:
                     bonuses = min(5, int(percentLacking / 0.2))
                     print "boosting plot by %(bv)d" % {"bv": bonuses}
-                    self.boostCityPlotValue(self.plotList[i].x, self.plotList[i].y, bonuses, self.plotList[i].isCoast())
+                    self.boostCityPlotValue(
+                        self.plotList[i].x,
+                        self.plotList[i].y,
+                        bonuses,
+                        self.plotList[i].isCoast(),
+                    )
 
             # add bonuses due to player difficulty settings
             self.addHandicapBonus()
 
         except Exception, e:
-            errorPopUp("PerfectWorld's starting plot finder has failed due to a rarely occuring bug, and this map likely has unfair starting locations. You may wish to quit this game and generate a new map.")
+            errorPopUp(
+                "PerfectWorld's starting plot finder has failed due to a rarely occuring bug, and this map likely has unfair starting locations. You may wish to quit this game and generate a new map."
+            )
             raise Exception, e
         return
 
@@ -4364,7 +4656,10 @@ class StartingPlotFinder:
             for pI in range(mc.height * mc.width):
                 plot = gameMap.plotByIndex(pI)
                 if plot.getArea() == areas[i].getID():
-                    if mc.AllowNewWorld and continentMap.areaMap.areaMap[pI] == continentMap.newWorldID:
+                    if (
+                        mc.AllowNewWorld
+                        and continentMap.areaMap.areaMap[pI] == continentMap.newWorldID
+                    ):
                         areaOldWorld.append(False)  # new world true = old world false
                     else:
                         areaOldWorld.append(True)
@@ -4393,7 +4688,9 @@ class StartingPlotFinder:
             if not plot.isWater() and plot.getArea() != start.getArea():
                 food, value = 0, 0
             else:
-                food, value = self.getPlotPotentialValue(plot.getX(), plot.getY(), sPlot.isCoast())
+                food, value = self.getPlotPotentialValue(
+                    plot.getX(), plot.getY(), sPlot.isCoast()
+                )
             totalFood += food
             cPlot = CityPlot(food, value)
             cityPlotList.append(cPlot)
@@ -4428,11 +4725,19 @@ class StartingPlotFinder:
         plot = gameMap.plot(x, y)
         if debugOut:
             print "Evaluating plot x = %(x)d, y = %(y)d" % {"x": x, "y": y}
-        commerce += plot.calculateBestNatureYield(YieldTypes.YIELD_COMMERCE, TeamTypes.NO_TEAM)
+        commerce += plot.calculateBestNatureYield(
+            YieldTypes.YIELD_COMMERCE, TeamTypes.NO_TEAM
+        )
         food += plot.calculateBestNatureYield(YieldTypes.YIELD_FOOD, TeamTypes.NO_TEAM)
-        production += plot.calculateBestNatureYield(YieldTypes.YIELD_PRODUCTION, TeamTypes.NO_TEAM)
+        production += plot.calculateBestNatureYield(
+            YieldTypes.YIELD_PRODUCTION, TeamTypes.NO_TEAM
+        )
         if debugOut:
-            print "Natural yields. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % {"f": food, "p": production, "c": commerce}
+            print "Natural yields. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % {
+                "f": food,
+                "p": production,
+                "c": commerce,
+            }
         # Get best bonus improvement score. Test tachnology era of bonus
         # first, then test each improvement
         bestImp = None
@@ -4440,20 +4745,34 @@ class StartingPlotFinder:
         bonusInfo = gc.getBonusInfo(bonusEnum)
         if (
             bonusInfo != None
-            and (gc.getTechInfo(bonusInfo.getTechCityTrade()) == None or gc.getTechInfo(bonusInfo.getTechCityTrade()).getEra() <= game.getStartEra())
-            and (gc.getTechInfo(bonusInfo.getTechReveal()) == None or gc.getTechInfo(bonusInfo.getTechReveal()).getEra() <= game.getStartEra())
+            and (
+                gc.getTechInfo(bonusInfo.getTechCityTrade()) == None
+                or gc.getTechInfo(bonusInfo.getTechCityTrade()).getEra()
+                <= game.getStartEra()
+            )
+            and (
+                gc.getTechInfo(bonusInfo.getTechReveal()) == None
+                or gc.getTechInfo(bonusInfo.getTechReveal()).getEra()
+                <= game.getStartEra()
+            )
         ):
             if bonusInfo == None:
                 if debugOut:
                     print "Bonus Type = None"
             else:
                 if debugOut:
-                    print "Bonus Type = %(b)s <------------------------------------------------------------" % {"b": bonusInfo.getType()}
+                    print "Bonus Type = %(b)s <------------------------------------------------------------" % {
+                        "b": bonusInfo.getType()
+                    }
             commerce += bonusInfo.getYieldChange(YieldTypes.YIELD_COMMERCE)
             food += bonusInfo.getYieldChange(YieldTypes.YIELD_FOOD)
             production += bonusInfo.getYieldChange(YieldTypes.YIELD_PRODUCTION)
             if debugOut:
-                print "Bonus yields. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % {"f": food, "p": production, "c": commerce}
+                print "Bonus yields. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % {
+                    "f": food,
+                    "p": production,
+                    "c": commerce,
+                }
         else:
             bonusEnum = -1
             bonusInfo = None
@@ -4466,9 +4785,15 @@ class StartingPlotFinder:
             if impInfo == None:
                 continue
             # some mods use improvements for other things, so if there's no tech requirement we still don't want it factored in.
-            if buildInfo.getTechPrereq() == TechTypes.NO_TECH or gc.getTechInfo(buildInfo.getTechPrereq()).getEra() > game.getStartEra():
+            if (
+                buildInfo.getTechPrereq() == TechTypes.NO_TECH
+                or gc.getTechInfo(buildInfo.getTechPrereq()).getEra()
+                > game.getStartEra()
+            ):
                 if debugOut:
-                    print "Tech era not high enough for %(s)s" % {"s": impInfo.getType()}
+                    print "Tech era not high enough for %(s)s" % {
+                        "s": impInfo.getType()
+                    }
                 continue
             else:
                 if debugOut:
@@ -4477,14 +4802,26 @@ class StartingPlotFinder:
                 if debugOut:
                     print "Plot can have %(s)s" % {"s": impInfo.getType()}
                 # This function will not find bonus yield changes for NO_PLAYER much to my annoyance
-                impCommerce = plot.calculateImprovementYieldChange(impEnum, YieldTypes.YIELD_COMMERCE, PlayerTypes.NO_PLAYER, False)
-                impFood = plot.calculateImprovementYieldChange(impEnum, YieldTypes.YIELD_FOOD, PlayerTypes.NO_PLAYER, False)
-                impProduction = plot.calculateImprovementYieldChange(impEnum, YieldTypes.YIELD_PRODUCTION, PlayerTypes.NO_PLAYER, False)
+                impCommerce = plot.calculateImprovementYieldChange(
+                    impEnum, YieldTypes.YIELD_COMMERCE, PlayerTypes.NO_PLAYER, False
+                )
+                impFood = plot.calculateImprovementYieldChange(
+                    impEnum, YieldTypes.YIELD_FOOD, PlayerTypes.NO_PLAYER, False
+                )
+                impProduction = plot.calculateImprovementYieldChange(
+                    impEnum, YieldTypes.YIELD_PRODUCTION, PlayerTypes.NO_PLAYER, False
+                )
 
                 if bonusEnum != -1:
-                    impCommerce += impInfo.getImprovementBonusYield(bonusEnum, YieldTypes.YIELD_COMMERCE)
-                    impFood += impInfo.getImprovementBonusYield(bonusEnum, YieldTypes.YIELD_FOOD)
-                    impProduction += impInfo.getImprovementBonusYield(bonusEnum, YieldTypes.YIELD_PRODUCTION)
+                    impCommerce += impInfo.getImprovementBonusYield(
+                        bonusEnum, YieldTypes.YIELD_COMMERCE
+                    )
+                    impFood += impInfo.getImprovementBonusYield(
+                        bonusEnum, YieldTypes.YIELD_FOOD
+                    )
+                    impProduction += impInfo.getImprovementBonusYield(
+                        bonusEnum, YieldTypes.YIELD_PRODUCTION
+                    )
                 # See if feature is removed, if so we must subtract the added yield
                 # from that feature
                 featureEnum = plot.getFeatureType()
@@ -4492,16 +4829,32 @@ class StartingPlotFinder:
                     featureInfo = gc.getFeatureInfo(featureEnum)
                     if debugOut:
                         print "Removing feature %(s)s" % {"s": featureInfo.getType()}
-                    impCommerce -= featureInfo.getYieldChange(YieldTypes.YIELD_COMMERCE) + featureInfo.getRiverYieldChange(YieldTypes.YIELD_COMMERCE) + featureInfo.getHillsYieldChange(YieldTypes.YIELD_COMMERCE)
+                    impCommerce -= (
+                        featureInfo.getYieldChange(YieldTypes.YIELD_COMMERCE)
+                        + featureInfo.getRiverYieldChange(YieldTypes.YIELD_COMMERCE)
+                        + featureInfo.getHillsYieldChange(YieldTypes.YIELD_COMMERCE)
+                    )
 
-                    impFood -= featureInfo.getYieldChange(YieldTypes.YIELD_FOOD) + featureInfo.getRiverYieldChange(YieldTypes.YIELD_FOOD) + featureInfo.getHillsYieldChange(YieldTypes.YIELD_FOOD)
+                    impFood -= (
+                        featureInfo.getYieldChange(YieldTypes.YIELD_FOOD)
+                        + featureInfo.getRiverYieldChange(YieldTypes.YIELD_FOOD)
+                        + featureInfo.getHillsYieldChange(YieldTypes.YIELD_FOOD)
+                    )
 
-                    impProduction -= featureInfo.getYieldChange(YieldTypes.YIELD_PRODUCTION) + featureInfo.getRiverYieldChange(YieldTypes.YIELD_PRODUCTION) + featureInfo.getHillsYieldChange(YieldTypes.YIELD_PRODUCTION)
+                    impProduction -= (
+                        featureInfo.getYieldChange(YieldTypes.YIELD_PRODUCTION)
+                        + featureInfo.getRiverYieldChange(YieldTypes.YIELD_PRODUCTION)
+                        + featureInfo.getHillsYieldChange(YieldTypes.YIELD_PRODUCTION)
+                    )
 
                 imp = Improvement(impEnum, impFood, impProduction, impCommerce, 0)
                 improvementList.append(imp)
                 if debugOut:
-                    print "Improv yields. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % {"f": impFood, "p": impProduction, "c": impCommerce}
+                    print "Improv yields. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % {
+                        "f": impFood,
+                        "p": impProduction,
+                        "c": impCommerce,
+                    }
             else:
                 if debugOut:
                     print "Plot can not have %(s)s" % {"s": impInfo.getType()}
@@ -4510,7 +4863,11 @@ class StartingPlotFinder:
             impCommerce = improvementList[i].commerce + commerce
             impFood = improvementList[i].food + food
             impProduction = improvementList[i].production + production
-            impValue = impCommerce * mc.CommerceValue + impFood * mc.FoodValue + impProduction * mc.ProductionValue
+            impValue = (
+                impCommerce * mc.CommerceValue
+                + impFood * mc.FoodValue
+                + impProduction * mc.ProductionValue
+            )
             # Food surplus makes the square much more valueable than if there
             # is no food here.
             if food >= gc.getFOOD_CONSUMPTION_PER_POPULATION():
@@ -4531,9 +4888,17 @@ class StartingPlotFinder:
         else:
             if debugOut:
                 print "no improvement possible here"
-        value = commerce * mc.CommerceValue + food * mc.FoodValue + production * mc.ProductionValue
+        value = (
+            commerce * mc.CommerceValue
+            + food * mc.FoodValue
+            + production * mc.ProductionValue
+        )
         if debugOut:
-            print "Evaluating. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % {"f": food, "p": production, "c": commerce}
+            print "Evaluating. Food=%(f)d, Production=%(p)d, Commerce=%(c)d" % {
+                "f": food,
+                "p": production,
+                "c": commerce,
+            }
         # Try to avoid included water food resources for non-coastal starts. It confuses the AI.
         if not coastalCity and plot.isWater():
             value = 0
@@ -4607,7 +4972,10 @@ class StartingPlotFinder:
                     continue
                 if plot.isWater() and not isCoastalCity:
                     continue
-                if not plot.isWater() and gameMap.plot(x, y).getArea() != plot.getArea():
+                if (
+                    not plot.isWater()
+                    and gameMap.plot(x, y).getArea() != plot.getArea()
+                ):
                     continue
                 if plot.getBonusType(TeamTypes.NO_TEAM) != BonusTypes.NO_BONUS:
                     continue
@@ -4623,13 +4991,23 @@ class StartingPlotFinder:
                         continue
                     if bonusInfo.getYieldChange(yields[n]) < 1:
                         continue
-                    if bonusInfo.getTechCityTrade() == TechTypes.NO_TECH or gc.getTechInfo(bonusInfo.getTechCityTrade()).getEra() <= game.getStartEra():
+                    if (
+                        bonusInfo.getTechCityTrade() == TechTypes.NO_TECH
+                        or gc.getTechInfo(bonusInfo.getTechCityTrade()).getEra()
+                        <= game.getStartEra()
+                    ):
                         if bp.PlotCanHaveBonus(plot, bonusEnum, False, False) == False:
                             if debugOut:
-                                print "Plot can't have %(b)s" % {"b": bonusInfo.getType()}
+                                print "Plot can't have %(b)s" % {
+                                    "b": bonusInfo.getType()
+                                }
                             continue
                         if debugOut:
-                            print "Setting bonus type at %(x)d,%(y)d to %(b)s" % {"x": plot.getX(), "y": plot.getY(), "b": bonusInfo.getType()}
+                            print "Setting bonus type at %(x)d,%(y)d to %(b)s" % {
+                                "x": plot.getX(),
+                                "y": plot.getY(),
+                                "b": bonusInfo.getType(),
+                            }
                         plot.setBonusType(bonusEnum)
                         bonusCount += 1
                         break
@@ -4664,7 +5042,10 @@ class StartingPlotFinder:
                     if totalYield <= 0:  # bad feature
                         plot.setFeatureType(FeatureTypes.NO_FEATURE, -1)
                 continue
-            if plot.getPlotType() == PlotTypes.PLOT_HILLS and gameMap.plot(x, y).getArea() == plot.getArea():
+            if (
+                plot.getPlotType() == PlotTypes.PLOT_HILLS
+                and gameMap.plot(x, y).getArea() == plot.getArea()
+            ):
                 hillsFound += 1
             if plot.getPlotType() == PlotTypes.PLOT_PEAK:
                 peaksFound += 1
@@ -4698,7 +5079,9 @@ class StartingPlotFinder:
             # first loop for hill tiles, then...
             for plot in plotList:
                 featureInfo = gc.getFeatureInfo(plot.getFeatureType())
-                if badFeaturesFound == mc.MaxBadFeaturesInFC / 2:  # truncation on this operation will prefer to remove on flats, which is desirable
+                if (
+                    badFeaturesFound == mc.MaxBadFeaturesInFC / 2
+                ):  # truncation on this operation will prefer to remove on flats, which is desirable
                     break
                 if featureInfo != None and plot.getPlotType() == PlotTypes.PLOT_HILLS:
                     totalYield = 0
@@ -4724,7 +5107,9 @@ class StartingPlotFinder:
                         plot.setFeatureType(FeatureTypes.NO_FEATURE, -1)
 
         # Ensure minimum number of hills
-        plotList = ShuffleList(plotList)  # need to re-shuffle so that hills are not the same as removed bad features
+        plotList = ShuffleList(
+            plotList
+        )  # need to re-shuffle so that hills are not the same as removed bad features
         hillsNeeded = mc.MinHillsInFC - hillsFound
         print "hills found = %d, hills needed = %d" % (hillsFound, hillsNeeded)
         if hillsNeeded > 0:
@@ -4756,39 +5141,84 @@ class StartingPlotFinder:
                 if eHandicap == gc.getInfoTypeForString("HANDICAP_SETTLER"):
                     if mc.SettlerBonus > 0:
                         print "Human player at Settler difficulty, adding %d resources" % mc.SettlerBonus
-                        self.boostCityPlotValue(startPlot.getX(), startPlot.getY(), mc.SettlerBonus, sPlot.isCoast())
+                        self.boostCityPlotValue(
+                            startPlot.getX(),
+                            startPlot.getY(),
+                            mc.SettlerBonus,
+                            sPlot.isCoast(),
+                        )
                 elif eHandicap == gc.getInfoTypeForString("HANDICAP_CHIEFTAIN"):
                     if mc.ChieftainBonus > 0:
                         print "Human player at Chieftain difficulty, adding %d resources" % mc.ChieftainBonus
-                        self.boostCityPlotValue(startPlot.getX(), startPlot.getY(), mc.ChieftainBonus, sPlot.isCoast())
+                        self.boostCityPlotValue(
+                            startPlot.getX(),
+                            startPlot.getY(),
+                            mc.ChieftainBonus,
+                            sPlot.isCoast(),
+                        )
                 elif eHandicap == gc.getInfoTypeForString("HANDICAP_WARLORD"):
                     if mc.WarlordBonus > 0:
                         print "Human player at Warlord difficulty, adding %d resources" % mc.WarlordBonus
-                        self.boostCityPlotValue(startPlot.getX(), startPlot.getY(), mc.WarlordBonus, sPlot.isCoast())
+                        self.boostCityPlotValue(
+                            startPlot.getX(),
+                            startPlot.getY(),
+                            mc.WarlordBonus,
+                            sPlot.isCoast(),
+                        )
                 elif eHandicap == gc.getInfoTypeForString("HANDICAP_NOBLE"):
                     if mc.NobleBonus > 0:
                         print "Human player at Noble difficulty, adding %d resources" % mc.NobleBonus
-                        self.boostCityPlotValue(startPlot.getX(), startPlot.getY(), mc.NobleBonus, sPlot.isCoast())
+                        self.boostCityPlotValue(
+                            startPlot.getX(),
+                            startPlot.getY(),
+                            mc.NobleBonus,
+                            sPlot.isCoast(),
+                        )
                 elif eHandicap == gc.getInfoTypeForString("HANDICAP_PRINCE"):
                     if mc.PrinceBonus > 0:
                         print "Human player at Prince difficulty, adding %d resources" % mc.PrinceBonus
-                        self.boostCityPlotValue(startPlot.getX(), startPlot.getY(), mc.PrinceBonus, sPlot.isCoast())
+                        self.boostCityPlotValue(
+                            startPlot.getX(),
+                            startPlot.getY(),
+                            mc.PrinceBonus,
+                            sPlot.isCoast(),
+                        )
                 elif eHandicap == gc.getInfoTypeForString("HANDICAP_MONARCH"):
                     if mc.MonarchBonus > 0:
                         print "Human player at Monarch difficulty, adding %d resources" % mc.MonarchBonus
-                        self.boostCityPlotValue(startPlot.getX(), startPlot.getY(), mc.MonarchBonus, sPlot.isCoast())
+                        self.boostCityPlotValue(
+                            startPlot.getX(),
+                            startPlot.getY(),
+                            mc.MonarchBonus,
+                            sPlot.isCoast(),
+                        )
                 elif eHandicap == gc.getInfoTypeForString("HANDICAP_EMPEROR"):
                     if mc.EmperorBonus > 0:
                         print "Human player at Emperor difficulty, adding %d resources" % mc.EmperorBonus
-                        self.boostCityPlotValue(startPlot.getX(), startPlot.getY(), mc.EmperorBonus, sPlot.isCoast())
+                        self.boostCityPlotValue(
+                            startPlot.getX(),
+                            startPlot.getY(),
+                            mc.EmperorBonus,
+                            sPlot.isCoast(),
+                        )
                 elif eHandicap == gc.getInfoTypeForString("HANDICAP_IMMORTAL"):
                     if mc.ImmortalBonus > 0:
                         print "Human player at Immortal difficulty, adding %d resources" % mc.ImmortalBonus
-                        self.boostCityPlotValue(startPlot.getX(), startPlot.getY(), mc.ImmortalBonus, sPlot.isCoast())
+                        self.boostCityPlotValue(
+                            startPlot.getX(),
+                            startPlot.getY(),
+                            mc.ImmortalBonus,
+                            sPlot.isCoast(),
+                        )
                 elif eHandicap == gc.getInfoTypeForString("HANDICAP_DEITY"):
                     if mc.DeityBonus > 0:
                         print "Human player at Deity Difficulty, adding %d resources" % mc.DeityBonus
-                        self.boostCityPlotValue(startPlot.getX(), startPlot.getY(), mc.DeityBonus, sPlot.isCoast())
+                        self.boostCityPlotValue(
+                            startPlot.getX(),
+                            startPlot.getY(),
+                            mc.DeityBonus,
+                            sPlot.isCoast(),
+                        )
 
 
 # Global access
@@ -5144,7 +5574,10 @@ def getDescription():
     A map's Description is displayed in the main menu when players go to begin a game.
     For no description return an empty string.
     """
-    return "Random map that simulates earth-like plate tectonics, " + "geostrophic and monsoon winds and rainfall."
+    return (
+        "Random map that simulates earth-like plate tectonics, "
+        + "geostrophic and monsoon winds and rainfall."
+    )
 
 
 def getWrapX():
@@ -5631,7 +6064,11 @@ def makeHarbor(x, y, oceanMap):
     xx = x
     yy = y + 2
     ii = oceanMap.getIndex(xx, yy)
-    if ii > -1 and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True and oceanMap.areaMap[ii] != oceanID:
+    if (
+        ii > -1
+        and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True
+        and oceanMap.areaMap[ii] != oceanID
+    ):
         makeChannel(x, y + 1)
         oceanMap.defineAreas(isSmallWaterMatch)
         oceanID = oceanMap.getOceanID()
@@ -5639,7 +6076,11 @@ def makeHarbor(x, y, oceanMap):
     xx = x
     yy = y - 2
     ii = oceanMap.getIndex(xx, yy)
-    if ii > -1 and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True and oceanMap.areaMap[ii] != oceanID:
+    if (
+        ii > -1
+        and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True
+        and oceanMap.areaMap[ii] != oceanID
+    ):
         makeChannel(x, y - 1)
         oceanMap.defineAreas(isSmallWaterMatch)
         oceanID = oceanMap.getOceanID()
@@ -5647,7 +6088,11 @@ def makeHarbor(x, y, oceanMap):
     xx = x + 2
     yy = y
     ii = oceanMap.getIndex(xx, yy)
-    if ii > -1 and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True and oceanMap.areaMap[ii] != oceanID:
+    if (
+        ii > -1
+        and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True
+        and oceanMap.areaMap[ii] != oceanID
+    ):
         makeChannel(x + 1, y)
         oceanMap.defineAreas(isSmallWaterMatch)
         oceanID = oceanMap.getOceanID()
@@ -5655,7 +6100,11 @@ def makeHarbor(x, y, oceanMap):
     xx = x - 2
     yy = y
     ii = oceanMap.getIndex(xx, yy)
-    if ii > -1 and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True and oceanMap.areaMap[ii] != oceanID:
+    if (
+        ii > -1
+        and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True
+        and oceanMap.areaMap[ii] != oceanID
+    ):
         makeChannel(x - 1, y)
         oceanMap.defineAreas(isSmallWaterMatch)
         oceanID = oceanMap.getOceanID()
@@ -5663,7 +6112,11 @@ def makeHarbor(x, y, oceanMap):
     xx = x - 1
     yy = y + 1
     ii = oceanMap.getIndex(xx, yy)
-    if ii > -1 and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True and oceanMap.areaMap[ii] != oceanID:
+    if (
+        ii > -1
+        and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True
+        and oceanMap.areaMap[ii] != oceanID
+    ):
         makeChannel(x - 1, y)
         oceanMap.defineAreas(isSmallWaterMatch)
         oceanID = oceanMap.getOceanID()
@@ -5671,7 +6124,11 @@ def makeHarbor(x, y, oceanMap):
     xx = x + 1
     yy = y + 1
     ii = oceanMap.getIndex(xx, yy)
-    if ii > -1 and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True and oceanMap.areaMap[ii] != oceanID:
+    if (
+        ii > -1
+        and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True
+        and oceanMap.areaMap[ii] != oceanID
+    ):
         makeChannel(x + 1, y)
         oceanMap.defineAreas(isSmallWaterMatch)
         oceanID = oceanMap.getOceanID()
@@ -5679,7 +6136,11 @@ def makeHarbor(x, y, oceanMap):
     xx = x - 1
     yy = y - 1
     ii = oceanMap.getIndex(xx, yy)
-    if ii > -1 and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True and oceanMap.areaMap[ii] != oceanID:
+    if (
+        ii > -1
+        and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True
+        and oceanMap.areaMap[ii] != oceanID
+    ):
         makeChannel(x, y - 1)
         oceanMap.defineAreas(isSmallWaterMatch)
         oceanID = oceanMap.getOceanID()
@@ -5687,7 +6148,11 @@ def makeHarbor(x, y, oceanMap):
     xx = x - 1
     yy = y + 1
     ii = oceanMap.getIndex(xx, yy)
-    if ii > -1 and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True and oceanMap.areaMap[ii] != oceanID:
+    if (
+        ii > -1
+        and oceanMap.getAreaByID(oceanMap.areaMap[ii]).water == True
+        and oceanMap.areaMap[ii] != oceanID
+    ):
         makeChannel(x, y + 1)
         oceanMap.defineAreas(isSmallWaterMatch)
         oceanID = oceanMap.getOceanID()
@@ -5843,8 +6308,15 @@ def addFeatures():
             i = GetIndex(x, y)
             plot = mmap.plot(x, y)
             # forest and jungle
-            if plot.isWater() == False and sm.terrainMap[i] != mc.DESERT and plot.isPeak() == False:
-                if sm.rainFallMap[i] > sm.plainsThreshold * mc.TreeFactor and PRand.random() < mc.MaxTreeChance:  # jungle
+            if (
+                plot.isWater() == False
+                and sm.terrainMap[i] != mc.DESERT
+                and plot.isPeak() == False
+            ):
+                if (
+                    sm.rainFallMap[i] > sm.plainsThreshold * mc.TreeFactor
+                    and PRand.random() < mc.MaxTreeChance
+                ):  # jungle
                     if sm.averageTempMap[i] > mc.JungleTemp:
                         if sm.terrainMap[i] == mc.PLAINS:
                             plot.setFeatureType(featureForest, FORESTLEAFY)
@@ -5857,7 +6329,13 @@ def addFeatures():
                     elif sm.averageTempMap[i] > mc.SnowTemp:
                         plot.setFeatureType(featureForest, FORESTSNOWY)
                 elif sm.rainFallMap[i] > sm.desertThreshold:  # forest
-                    if sm.rainFallMap[i] > PRand.random() * sm.plainsThreshold * mc.TreeFactor / mc.MaxTreeChance:
+                    if (
+                        sm.rainFallMap[i]
+                        > PRand.random()
+                        * sm.plainsThreshold
+                        * mc.TreeFactor
+                        / mc.MaxTreeChance
+                    ):
                         if sm.averageTempMap[i] > mc.ForestTemp:
                             plot.setFeatureType(featureForest, FORESTLEAFY)
                         elif sm.averageTempMap[i] > mc.TundraTemp:
@@ -5865,7 +6343,12 @@ def addFeatures():
                         elif sm.averageTempMap[i] > mc.SnowTemp * 0.8:
                             plot.setFeatureType(featureForest, FORESTSNOWY)
             # floodplains and Oasis
-            elif sm.terrainMap[i] == mc.DESERT and sm.plotMap[i] != mc.HILLS and sm.plotMap[i] != mc.PEAK and plot.isWater() == False:
+            elif (
+                sm.terrainMap[i] == mc.DESERT
+                and sm.plotMap[i] != mc.HILLS
+                and sm.plotMap[i] != mc.PEAK
+                and plot.isWater() == False
+            ):
                 if plot.isRiver() == True:
                     plot.setFeatureType(featureFloodPlains, 0)
                 else:
@@ -5876,7 +6359,10 @@ def addFeatures():
                         for xx in range(x - 1, x + 2):
                             ii = GetIndex(xx, yy)
                             surPlot = mmap.plot(xx, yy)
-                            if sm.terrainMap[ii] != mc.DESERT and sm.plotMap[ii] != mc.PEAK:
+                            if (
+                                sm.terrainMap[ii] != mc.DESERT
+                                and sm.plotMap[ii] != mc.PEAK
+                            ):
                                 # print "non desert neighbor"
                                 foundNonDesert = True
                             elif surPlot == 0:
@@ -5970,5 +6456,4 @@ def beforeInit():
 ##rm.printFlowMap()
 ##rm.printRiverMap()
 ##rm.printRiverAndTerrainAlign()
-
 ##sm.printHeightMap()
